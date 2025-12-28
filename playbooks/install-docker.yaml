@@ -1,19 +1,21 @@
 ---
-- name: Install Docker
+- name: Install Docker (AWX 17 compatible)
   hosts: server_basic
   become: true
+  gather_facts: false
+
   tasks:
-    - name: Update repository
-      ansible.builtin.apt:
-        update_cache: true
-    - name: Install Docker.io
-      ansible.builtin.apt:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
         name: docker.io
         state: present
-    - name: Start and enable Docker service
-      ansible.builtin.systemd:
+
+    - name: Start Docker service
+      service:
         name: docker
-        enabled: yes
         state: started
-    - name: Run hello-world container
-      command: docker run hello-world
+        enabled: yes
